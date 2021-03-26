@@ -1,0 +1,26 @@
+#!/bin/bash
+FOREGROUND=$(xrdb -query | grep 'color6:'| awk 'NR==1{print $NF}')
+ROFI_OPTIONS=()
+
+another=$(echo "Lock
+Suspend
+Logout
+Reboot
+Poweroff" | awk '{print $(NF-1)}' | rofi -dmenu -i -p "SYSTEM: ")
+
+if [ "$another" == "Lock" ] ; then
+	~/.config/scripts/i3exit lock;
+elif [ "$another" == "Suspend" ] ; then
+	~/.config/scripts/i3exit suspend;
+elif [ "$another" == "Logout" ] ; then
+	[ $(echo -e "Yes\nNo" | rofi "${ROFI_OPTIONS[@]}" -theme-str "*{accent: #e53714;}" -dmenu -i -p "Are you shure you want to proceed?") == Yes ] && ~/.config/scripts/i3exit exit
+
+elif [ "$another" == "Reboot" ] ; then
+	[ $(echo -e "Yes\nNo" | rofi "${ROFI_OPTIONS[@]}" -theme-str "*{accent: #e53714;}" -dmenu -i -p "Are you shure you want to proceed?") == Yes ] && ~/.config/scripts/i3exit reboot
+
+elif [ "$another" == "Poweroff" ] ; then
+	[ $(echo -e "Yes\nNo" | rofi "${ROFI_OPTIONS[@]}" -theme-str "*{accent: #e53714;}" -dmenu -i -p "Are you shure you want to proceed?") == Yes ] && ~/.config/scripts/i3exit poweroff
+
+else
+    echo $another
+fi
